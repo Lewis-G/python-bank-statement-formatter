@@ -1,1 +1,1 @@
-# python-bank-statement-formatter
+pip install python-dateutil
