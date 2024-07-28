@@ -1,20 +1,18 @@
 import os
 import sys
 from typing import List
-from input_output import read_csv_to_string, read_json_to_dict
+from basic_file_utils import read_csv_to_string, read_json_to_dict
 from bank_category import BankCategory
 import re
 
 # Create paths
 script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.join(script_dir, '..')
-print(parent_dir)
+parent_dir = os.path.abspath(os.path.join(script_dir, '..'))
 
-# useful: downloads_folder = 
+input_csv_path = f'{parent_dir}/input.csv'
+input_json_categories_path = f'{parent_dir}/categories.json'
+output_path = f'{parent_dir}/output.txt'
 
-input_csv_path = f'{script_dir}/input.csv'
-input_json_categories_path = f'{script_dir}/categories.json'
-output_path = f'{script_dir}/output.txt'
 transactions_input = ''
 categories_dict: dict = {}
 

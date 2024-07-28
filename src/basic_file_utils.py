@@ -40,6 +40,3 @@ def write_string_to_txt(input_string, output_path):
     except Exception as e:
         raise Exception(f"An unexpected error occurred while writing to the file '{
                         output_path}': {e}")
-        
-
-temp = 5

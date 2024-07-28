@@ -1,7 +1,7 @@
 import random
 import os
 from datetime import datetime, timedelta
-from input_output import write_string_to_txt
+from basic_file_utils import write_string_to_txt
 
 def generate_csv_data():
     
@@ -51,5 +51,6 @@ for i in range(364):
     datetime_ptr = datetime_ptr + timedelta(days=1)
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-output_path = f'{script_dir}/input.csv'    
+parent_dir = os.path.abspath(os.path.join(script_dir, '..'))
+output_path = f'{parent_dir}/input.csv'    
 write_string_to_txt(csv_data, output_path)
