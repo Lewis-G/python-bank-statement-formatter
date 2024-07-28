@@ -1,34 +1,83 @@
 import os
 import sys
 from typing import List
-from input_output import read_csv_to_string, write_string_to_csv, read_json_to_dict
+from input_output import read_csv_to_string, read_json_to_dict
 from bank_category import BankCategory
+import re
 
 # Create paths
 script_dir = os.path.dirname(os.path.abspath(__file__))
 # useful: downloads_folder = os.path.join(script_dir, 'downloads')
 
-input_path = f'{script_dir}/input.csv'
-output_path = f'{script_dir}/output.csv'
+input_csv_path = f'{script_dir}/input.csv'
+input_json_categories_path = f'{script_dir}/categories.json'
+output_path = f'{script_dir}/output.txt'
+transactions_input = ''
+categories_dict: dict = {}
 
 try:
-    csv_string = read_csv_to_string(input_path)
+    transactions_input = read_csv_to_string(input_csv_path)
 except Exception as e:
     print(e)
     sys.exit(1)
 
 try:
-    csv_string = read_json_to_dict(input_path)
+    categories_dict = read_json_to_dict(input_json_categories_path)
 except Exception as e:
     print(e)
     sys.exit(1)
 
-categories: List[BankCategory] = []
+category_objects: List[BankCategory] = []
+category_names = list(categories_dict.keys())
 
-for i in range(100):
-    categories.append(BankCategory(f'number {i}'))
+# Use category name and keywords to create category objects
+for i in range(len(category_names)):
+    category_objects.append(BankCategory(category_names[i], categories_dict[category_names[i]]))
+
+# Add a final category for transactions that don't match any keywords
+category_objects.append(BankCategory("Other"))
+
+output_string = ''
+
+transactions_input = transactions_input.split('\n')
+
+column_pattern = r'(".*"), (".*"), (".*")'
+
+for i in range(len(transactions_input)):
+    if (transactions_input[i] == ""):
+        break
     
-for i in range(100):
-    print(categories[i].category_name)
-
-write_string_to_csv(csv_string, output_path)
+    row_groups = re.match(column_pattern, transactions_input[i])
+    
+    # Input date format must be: dd/mm/yyyy 
+    date_dd_mm_yyyy = row_groups.group(1)[1:-1]
+    date_groups = re.match(r"^(\d{1,2})/(\d{1,2})/(\d{4})$", date_dd_mm_yyyy)
+    
+    if not date_groups:
+        print(f"""1st value of row {i} is invalid.
+                    {row_groups.group(1), row_groups.group(2), row_groups.group(3)}
+                This row will be skipped\n""")
+        continue
+    
+    # Reformat date
+    date_yyyy_mm_dd = f"{date_groups.group(3)}/{(date_groups.group(2)):0>2}/{(date_groups.group(1)):0>2}"
+    
+    # Value format must be <Sequence of digits>.<2 digits>
+    dollar_value = row_groups.group(2)[2:-1]
+    if (re.search(r'^\d+\.\d{2}$', dollar_value) == None):
+        print(f"""2nd value of row {i} is invalid.
+                    {date_yyyy_mm_dd, row_groups.group(2), row_groups.group(3)}
+                This row will be skipped\n""")
+        continue
+    
+    text = row_groups.group(3)
+    
+    matched_keyword = False
+    j = 0
+    while (j < len(category_objects)-1) and matched_keyword == False:
+        
+        if (category_objects[j].compare_to_keywords(text)):
+            matched_keyword = True
+        j = j + 1
+    
+            

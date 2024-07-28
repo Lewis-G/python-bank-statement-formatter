@@ -3,9 +3,11 @@ class BankCategory:
     def __init__(self, category_name, keyword_array=None):
         if keyword_array is None:
             keyword_array = []
-        self._category_name = category_name
-        self._keyword_array = keyword_array
-        self._total_value = 0
+        
+        self._category_name: str = category_name
+        self._keyword_array: list|None = keyword_array
+        self._total_value: int = 0
+        
         self._transactions_list = ""
 
     def compare_to_keywords(self, input_string):
