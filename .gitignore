@@ -1,6 +1,10 @@
-/*
-!.gitignore
-!bank_category.py
-!input_output.py
-!main.py
-!random_input_generator.py
+src/__pycache__
+
+database.py
+db_temp.py
+parse_csv_and_input_to_db.py
+basic_file_utils.py
+
+input.csv
+categories.json
+config.json

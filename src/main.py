@@ -7,7 +7,10 @@ import re
 
 # Create paths
 script_dir = os.path.dirname(os.path.abspath(__file__))
-# useful: downloads_folder = os.path.join(script_dir, 'downloads')
+parent_dir = os.path.join(script_dir, '..')
+print(parent_dir)
+
+# useful: downloads_folder = 
 
 input_csv_path = f'{script_dir}/input.csv'
 input_json_categories_path = f'{script_dir}/categories.json'
