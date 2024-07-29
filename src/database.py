@@ -35,32 +35,59 @@ class DatabaseUtils:
         result = self._cursor.fetchall()
         return result
 
-    def select(self, columns_input:list=None, order:dict=None):
+    def select(self, columns_input:list=None, order_by:list=None, 
+               where_categories:list=None, where_dates:list=None, where_cents:list=None):
+        """Specify columns to select.
+
+        Args:
+            columns_input (list, optional): _description_. If no parameter is provided, all columns are selected.
+            order_by (list, optional): _description_. The order of keys in the list determine the ordering rank.
+        """
         
         columns = "*"
         if columns_input:
-            columns = ", ".join(columns)
+            columns = ", ".join(columns_input)
         
-        # Order determines the rank
-        order_by = [
-            {"Name": "ID", "Direction": "ASC"},
-            {"Name": "Date", "Direction": "ASC"},
-            {"Name": "Cents", "Direction": "ASC"},
-            {"Name": "Description", "Direction": "ASC"},
-            {"Name": "Category", "Direction": "ASC"}
-        ]
+        select_str = f'''SELECT {columns} FROM Transactions'''
+        has_where_conditions = False
         
-        # Default?
-        order_by_string = ''
-        for item in enumerate(order_by):
-            order_by_string += f"{item["Name"]}, {item["Direction"]} "
-        order_by_string = order_by_string[:-1]
-
-        select_str = f'''SELECT {columns} FROM Transactions
-                        ORDER BY {order_by_string};'''
+        if where_categories:
+            has_where_conditions = True
+            select_str += f" WHERE Category IN ({", ".join([f'"{value}"' for value in where_categories])})"
+            
+        if where_dates:
+            where_dates_str = f"Date > '{where_dates[0]}' AND Date < '{where_dates[1]}'"
+            if has_where_conditions:
+                select_str += f" AND {where_dates_str}"
+            else:
+                select_str += f" WHERE {where_dates_str}"
+            has_where_conditions = True
         
+        if where_cents:
+            where_cents_str = f"Cents > {where_cents[0]} AND Cents < {where_cents[1]}"
+            if has_where_conditions:
+                select_str += f" AND {where_cents_str}"
+            else:
+                select_str += f" WHERE {where_cents_str}"
         
-        # Where, date, value, category
+        if order_by:
+            order_by_str = ''
+            for i in range(len(order_by)):
+                order_by_str += f"{order_by[i]["Name"]} {order_by[i]["Direction"]}, "
+            
+            order_by_str = order_by_str[:-2]
+            select_str += f" ORDER BY {order_by_str}"
         
+        select_str += ";"
+        # print(select_str)
+        self._cursor.execute(select_str)
+        result = self._cursor.fetchall()
+        return result
+    
+    def select_temp(self):
+        self._cursor.execute('''SELECT * FROM Transactions Order BY 'Value' ASC;''')
+        result = self._cursor.fetchall()
+        return result
+    
     def close(self):
         self._connection.close()

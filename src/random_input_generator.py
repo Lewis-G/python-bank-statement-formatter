@@ -27,6 +27,9 @@ def generate_csv_data():
     random_cents = f'{random.randint(0, 99):02}'
     random_dollar_value += f'.{random_cents}'
     
+    if (random.randint(0, 10) < 5):
+        random_dollar_value = f'-{random_dollar_value}'
+    
     return random_dollar_value, categories[random_int_1][key][random_int_2]
 
 def format_date(date: datetime):
@@ -40,13 +43,13 @@ datetime_ptr = datetime(now.year-1, now.month, now.day)
 
 for i in range(364):
     if (i % 7 == 0):
-        csv_data += f'"{format_date(datetime_ptr)}", "$300.00", "Weekly rent"\n'
+        csv_data += f'"{format_date(datetime_ptr)}", "300.00", "Weekly rent"\n'
     if (i % 14 == 11):
-        csv_data += f'"{format_date(datetime_ptr)}", "$2400.00", "Income payment"\n'
+        csv_data += f'"{format_date(datetime_ptr)}", "2400.00", "Income payment"\n'
     
     for i in range(random.randint(0, 3)):
         temp_data = generate_csv_data()
-        csv_data += f'"{format_date(datetime_ptr)}", "${temp_data[0]}", "{temp_data[1]}"\n'    
+        csv_data += f'"{format_date(datetime_ptr)}", "{temp_data[0]}", "{temp_data[1]}"\n'    
         
     datetime_ptr = datetime_ptr + timedelta(days=1)
 

@@ -1,9 +1,8 @@
 __pycache__
 
-db_temp.py
-parse_csv_and_input_to_db.py
-
 transactions.db
 input.csv
 categories.json
 config.json
+
+/test/test_database_2.py
