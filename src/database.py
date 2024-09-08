@@ -1,6 +1,6 @@
 import sqlite3
 
-class DatabaseUtils:
+class DatabaseClient:
     def __init__(self, db_path):
         self._connection = sqlite3.connect(db_path)
         self._cursor = self._connection.cursor()
@@ -84,10 +84,14 @@ class DatabaseUtils:
         result = self._cursor.fetchall()
         return result
     
-    def select_temp(self):
-        self._cursor.execute('''SELECT * FROM Transactions Order BY 'Value' ASC;''')
+    def select_sum_cents(self):
+        self._cursor.execute('''SELECT Category, SUM(Cents) AS TotalValue
+                             FROM Transactions
+                             GROUP BY Category;
+                             ''')
         result = self._cursor.fetchall()
         return result
+        # output example - [('ATO Credit', -13591), ('Eating out/Take-away', 5526), ('Medical', -812)]
     
     def close(self):
         self._connection.close()

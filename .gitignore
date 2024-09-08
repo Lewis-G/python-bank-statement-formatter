@@ -5,4 +5,4 @@ input.csv
 categories.json
 config.json
 
-/test/test_database_2.py
+temp/

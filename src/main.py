@@ -3,8 +3,8 @@ import sys
 from typing import List
 from basic_file_utils import read_csv_to_string, read_json_to_dict
 from bank_category import BankCategory
-from parse_csv import parse_csv_split_and_insert_into_db
-from database import DatabaseUtils
+from utils import parse_csv_split_and_insert_into_db
+from database import DatabaseClient
 
 # Create paths
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -39,7 +39,7 @@ for i in range(len(category_names)):
 # Add a final category for transactions that don't match any keywords
 category_objects.append(BankCategory("Other"))
 
-database = DatabaseUtils(db_path)
+database = DatabaseClient(db_path)
 if (database.check_if_table_exists()):
     database.delete_all_rows()
 else:

@@ -1,8 +1,9 @@
 import re
+from collections import defaultdict
 from bank_category import BankCategory
-from database import DatabaseUtils
+from database import DatabaseClient
 
-def parse_csv_split_and_insert_into_db(csv:str, category_objects:list[BankCategory], database:DatabaseUtils=None):
+def parse_csv_split_and_insert_into_db(csv:str, category_objects:list[BankCategory], database_client:DatabaseClient):
     
     csv_split = csv.split('\n')
     column_pattern = r'"(.*)", "(.*)", "(.*)"'
@@ -47,4 +48,28 @@ def parse_csv_split_and_insert_into_db(csv:str, category_objects:list[BankCatego
                 category_name = category_objects[j].category_name
             j = j + 1
             
-        database.insert([i, date_yyyy_mm_dd, cent_value, text, category_name])
+        database_client.insert([i, date_yyyy_mm_dd, cent_value, text, category_name])
+        
+def format_rows_to_summary(row_results:list):
+    
+    # Default list is used to easily print at the end
+    formatted_results = defaultdict(list)
+
+    for i in range(len(row_results)):
+        tmp_date = f"{row_results[i][1]},"
+        tmp_date = f"{tmp_date:<23}"
+        
+        tmp_cents_str = str(row_results[i][2])
+        tmp_cents_str = f"{tmp_cents_str[:-2]}.{tmp_cents_str[-2:]},"
+        tmp_cents_str = f"{tmp_cents_str:<19}"
+        
+        tmp_category_name = row_results[i][4]
+        tmp_description = row_results[i][3]
+        
+        formatted_results[tmp_category_name].append(f"Date: {tmp_date} Dollars: ${tmp_cents_str} Description: {tmp_description}")
+        
+        summary =  ""
+        for _category in formatted_results:
+            summary += f'{_category}:\n{'\n'.join(formatted_results[_category])}\n'
+        
+    return summary
