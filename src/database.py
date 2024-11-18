@@ -5,6 +5,9 @@ class DatabaseClient:
         self._connection = sqlite3.connect(db_path)
         self._cursor = self._connection.cursor()
 
+    def connect(self):
+        self._cursor = self._connection.cursor()
+
     def create_table(self):
         self._cursor.execute('''CREATE TABLE Transactions
                             (ID INT PRIMARY KEY NOT NULL,
@@ -12,6 +15,10 @@ class DatabaseClient:
                             Cents INT NOT NULL,
                             Description TEXT NOT NULL,
                             Category TEXT);''')
+        self._connection.commit()
+
+    def delete_table(self):
+        self._cursor.execute(f"DROP TABLE IF EXISTS Transactions;")
         self._connection.commit()
 
     def check_if_table_exists(self):

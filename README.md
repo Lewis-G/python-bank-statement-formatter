@@ -1,13 +1,13 @@
-pip install python-dateutil
-pip install customtkinter
+Note - This tool currently exists as an MVP. I will make further developments to make it more user friendly.
+
+This tool takes the following inputs;
+* CSV containing bank transaction,
+* JSON containing categories and associated keywords
+
+It then parses the CSV, and saves each transaction into an SQLite database.
 
 
-Parse CSV and JSON, add categories to transactions and save to DB
-
-TO DO: check if CSV is in valid format, embedded quotes are escaped with additional quotes
-TO DO: check that all value data has a . with 2 decimal places, when importing
-TO DO: improve column_pattern to assess double quotes within values
-TO DO: More tests
-TO DO: More edge case checks when parsing data
-
-TO DO: get summation of all values per columnn
+Install:
+`
+pip install python-dateutil customtkinter
+` 
